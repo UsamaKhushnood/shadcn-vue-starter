@@ -15,7 +15,7 @@ export default defineConfig({
   plugins: [
     vue(),
     Components({
-      dirs: ['src/components/base'],
+      // dirs: ['src/components/common'],
       extensions: ['vue']
     })
   ],
