@@ -10,8 +10,8 @@
       class="absolute top-1/2 right-0 -translate-y-1/2 mr-4 cursor-pointer hover:text-"
       @click="showPassword = !showPassword"
     >
-      <Eye v-if="showPassword" />
-      <EyeOff v-else />
+      <Eye v-if="showPassword" size="18" class="text-muted-foreground" />
+      <EyeOff v-else size="18" class="text-muted-foreground" />
     </div>
   </div>
 </template>

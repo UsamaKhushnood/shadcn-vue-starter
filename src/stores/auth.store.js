@@ -1,11 +1,14 @@
 import { defineStore } from 'pinia'
-import { resetAllPiniaStores, useCommonStore, useLocaleStore } from './index'
+import { resetAllPiniaStores } from './index'
 import api from '../helpers/axios'
 import fetchWrapper from '../helpers/axios'
 import VueCookies from 'vue-cookies'
 import router from '@/router'
-import Echo from 'laravel-echo'
-import Pusher from 'pusher-js'
+import { useToast } from 'vue-toastification'
+// import Echo from 'laravel-echo'
+// import Pusher from 'pusher-js'
+
+const toast = useToast()
 
 export const useAuthStore = defineStore('auth', {
   state: () => ({
@@ -20,10 +23,9 @@ export const useAuthStore = defineStore('auth', {
   },
   actions: {
     login(form) {
-      form.language = useLocaleStore().locale
       return api.post('/login', form).then((response) => {
-        const {token, user, message} = response.data
-        this.setUpProfile({token, user})
+        const { token, user, message } = response.data
+        this.setUpProfile({ token, user })
         if (router.currentRoute.value.query.redirect) {
           router.push(router.currentRoute.value.query.redirect)
         } else if (!user.email_verified) {
@@ -31,29 +33,23 @@ export const useAuthStore = defineStore('auth', {
         } else {
           router.push('/')
         }
-        useCommonStore().initAll()
+        // useCommonStore().initAll()
       })
     },
     signup(form) {
-      form.language = useLocaleStore().locale
       return api.post('/register', form).then((response) => {
-        const {token, data, message} = response.data
-        this.setUpProfile({token, user: data})
+        const { token, data, message } = response.data
+        this.setUpProfile({ token, user: data })
         router.push('/email-verification')
+        toast.success(message)
       })
     },
     setUpProfile(payload) {
-      // setup locale
-      const localeStore = useLocaleStore()
-      if (localeStore.locale !== payload.user.language) {
-        useLocaleStore().setLocale(payload.user.language)
-      }
-
       VueCookies.set('token', payload.token)
       this.user = payload.user
       this.isLoggedIn = true
-      useCommonStore().initAll()
-      this.initializePusher()
+      // useCommonStore().initAll()
+      // this.initializePusher()
     },
     getMyProfile() {
       return api.get(`/users/${this.user.username}`).then((response) => {
@@ -149,7 +145,7 @@ export const useAuthStore = defineStore('auth', {
           resolve()
         } else {
           const currentPath = router.currentRoute.value.fullPath
-          router.push({name: 'login', query: {redirect: currentPath}})
+          router.push({ name: 'login', query: { redirect: currentPath } })
           reject()
         }
       })
