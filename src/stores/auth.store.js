@@ -14,8 +14,6 @@ export const useAuthStore = defineStore('auth', {
   state: () => ({
     user: {},
     isLoggedIn: false,
-    detailsComplete: false,
-    resettingPassword: false
   }),
   getters: {
     isAuthenticated: (state) => state.isLoggedIn || VueCookies.isKey('token'),
@@ -36,14 +34,7 @@ export const useAuthStore = defineStore('auth', {
         // useCommonStore().initAll()
       })
     },
-    signup(form) {
-      return api.post('/register', form).then((response) => {
-        const { token, data, message } = response.data
-        this.setUpProfile({ token, user: data })
-        router.push('/email-verification')
-        toast.success(message)
-      })
-    },
+
     setUpProfile(payload) {
       VueCookies.set('token', payload.token)
       this.user = payload.user
@@ -111,9 +102,6 @@ export const useAuthStore = defineStore('auth', {
           return response
         })
     },
-    updateDetailsStatus(status) {
-      this.detailsComplete = status
-    },
     getProfile() {
       return api.get(`/users/${this.user.username}`).then((response) => {
         return response.data.data
@@ -139,17 +127,7 @@ export const useAuthStore = defineStore('auth', {
       resetAllPiniaStores()
       router.push('/login')
     },
-    loginFirst() {
-      return new Promise((resolve, reject) => {
-        if (this.isLoggedIn) {
-          resolve()
-        } else {
-          const currentPath = router.currentRoute.value.fullPath
-          router.push({ name: 'login', query: { redirect: currentPath } })
-          reject()
-        }
-      })
-    }
+
   },
   persist: true
 })
