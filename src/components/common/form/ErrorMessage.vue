@@ -1,5 +1,5 @@
 <template>
-  <p class="text-sm text-destructive mt-[6px]">
+  <p class="text-xs text-destructive mt-1">
     {{ v[name]?.$errors[0]?.$message }}
   </p>
 </template>
