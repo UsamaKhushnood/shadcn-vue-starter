@@ -24,13 +24,7 @@ export const useAuthStore = defineStore('auth', {
       return api.post('/login', form).then((response) => {
         const { token, user, message } = response.data
         this.setUpProfile({ token, user })
-        if (router.currentRoute.value.query.redirect) {
-          router.push(router.currentRoute.value.query.redirect)
-        } else if (!user.email_verified) {
-          router.push('/email-verification')
-        } else {
-          router.push('/')
-        }
+        router.push('/')
         // useCommonStore().initAll()
       })
     },
@@ -68,53 +62,21 @@ export const useAuthStore = defineStore('auth', {
       })
     },
 
-    forgotPassword(form) {
-      this.user.email = form.email
-      this.resettingPassword = true
-      return api.post('/forgot-password', form).then((response) => {
-        router.push('/password/email-sent')
-      })
-    },
-    resetPassword(form) {
-      return api.post('/reset-password', form).then((response) => {
-        router.push('/settings/profile')
-      })
-    },
-    sendVerifcationEmail() {
-      return api.get('/settings/email/resend').then((response) => {
-        console.log(response)
-        return response
-      })
-    },
-    resedVerificationEmail(form) {
-      return api.post('/reset-password', form).then((response) => {
-        console.log(response)
-      })
-    },
-    verifyEmail(id, payload) {
-      return api
-        .post(
-          `/settings/email/verify/${id}?expires=${payload.expires}&signature=${payload.signature}&hash=${payload.hash}`,
-          payload
-        )
-        .then((response) => {
-          this.user.email_verified = true
-          return response
-        })
-    },
+
     getProfile() {
       return api.get(`/users/${this.user.username}`).then((response) => {
         return response.data.data
       })
     },
     logout() {
-      if (fetchWrapper.defaults.headers?.Authorization) {
-        return api.post('/logout').then(() => {
-          this.reset()
-        })
-      } else {
-        this.reset()
-      }
+      // if (fetchWrapper.defaults.headers?.Authorization) {
+      //   return api.post('/logout').then(() => {
+      //     this.reset()
+      //   })
+      // } else {
+      //   this.reset()
+      // }
+      this.reset()
     },
     reset() {
       VueCookies.remove('token')

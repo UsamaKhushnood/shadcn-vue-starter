@@ -6,7 +6,7 @@
     <div>
       <slot :handleBlur="handleBlur" :message="errorMessage"></slot>
       <slot name="message" :message="errorMessage">
-        <p v-if="showMessage && errorMessage" class="text-sm text-destructive mt-[6px]">
+        <p v-if="showMessage && errorMessage" class="text-xs text-destructive mt-1">
           {{ errorMessage }}
         </p>
       </slot>
