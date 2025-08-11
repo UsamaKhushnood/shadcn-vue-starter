@@ -25,7 +25,7 @@ module.exports = {
   	extend: {
   		fontFamily: {
   			sans: [
-  				'Roboto',
+  				'Inter',
                     ...fontFamily.sans
                 ]
   		},

@@ -1,7 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import NProgress from 'nprogress'
 import WrapperLayout from '@/layouts/WrapperLayout.vue'
-import DashboardLayout from '@/layouts/DashboardLayout.vue'
 import AuthLayout from '@/layouts/AuthLayout.vue'
 import { useAuthStore } from '@/stores'
 
@@ -14,22 +13,10 @@ const router = createRouter({
       children: [
         {
           path: '/',
-          component: DashboardLayout,
-
-          children: [
-            {
-              path: '/',
-              name: 'dashboard',
-              components: {
-                default: WrapperLayout,
-                dashboard: () => import('@/views/dashboard.vue'),
-              },
-              meta: {
-                title: 'dashboard',
-                auth: true
-              }
-            },
-          ]
+          component: () => import('@/views/HomeView.vue'),
+          meta: {
+            title: "Vue Frontend Expert"
+          }
         },
         {
           path: '/',
@@ -119,13 +106,13 @@ router.beforeEach(async (to, from, next) => {
   document.title = `${to.meta.title}`
   NProgress.start()
 
-  const authStore = useAuthStore()
-  const isAuthenticated = authStore.isAuthenticated
-  const authRequired = to.meta.auth
+  // const authStore = useAuthStore()
+  // const isAuthenticated = authStore.isAuthenticated
+  // const authRequired = to.meta.auth
 
-  if (authRequired && !isAuthenticated) {
-    return next('/login')
-  }
+  // if (authRequired && !isAuthenticated) {
+  //   return next('/login')
+  // }
 
   next()
 })
